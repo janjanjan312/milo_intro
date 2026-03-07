@@ -196,9 +196,7 @@ export default function App() {
       <nav className="fixed top-0 w-full z-50 bg-stone-50/80 backdrop-blur-md border-b border-stone-100">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center">
-              <span className="text-white font-serif font-bold text-xl">M</span>
-            </div>
+            <img src="/images/logo.png" alt="Milo" className="w-8 h-8 rounded-lg" />
             <span className="font-serif font-bold text-xl tracking-tight">Milo</span>
           </div>
           <a href="https://milo-one-lyart.vercel.app" target="_blank" rel="noopener noreferrer" className="bg-stone-900 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-stone-800 transition-colors">
@@ -631,9 +629,7 @@ export default function App() {
       {/* Footer */}
       <footer className="py-20 border-t border-stone-100 text-center">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center">
-            <span className="text-white font-serif font-bold text-xl">M</span>
-          </div>
+          <img src="/images/logo.png" alt="Milo" className="w-8 h-8 rounded-lg" />
           <span className="font-serif font-bold text-xl tracking-tight">Milo</span>
         </div>
         <p className="text-stone-400 text-sm">© 2026 Milo AI Nutritionist. All rights reserved.</p>
