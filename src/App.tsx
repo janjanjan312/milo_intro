@@ -13,17 +13,20 @@ import {
   Zap,
   BrainCircuit,
   Database,
-  Play
+  Play,
+  QrCode,
+  X
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface SectionProps {
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
-const Section = ({ children, className = "" }: SectionProps) => (
-  <section className={`py-24 px-6 max-w-7xl mx-auto ${className}`}>
+const Section = ({ children, className = "", id }: SectionProps) => (
+  <section id={id} className={`py-24 px-6 max-w-7xl mx-auto ${className}`}>
     {children}
   </section>
 );
@@ -108,6 +111,84 @@ const FlowArrow = ({ direction = "down", length = "h-12" }: { direction?: "down"
   </div>
 );
 
+const QrCodeButton = () => {
+  const [showQr, setShowQr] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setShowQr(true)}
+        className="w-14 h-14 bg-white border border-stone-200 rounded-full flex items-center justify-center hover:bg-stone-50 transition-colors shadow-sm"
+        title="扫码打开"
+      >
+        <QrCode className="w-6 h-6 text-stone-700" />
+      </button>
+
+      {showQr && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowQr(false)}>
+          <div className="bg-white rounded-3xl p-8 shadow-2xl relative max-w-xs w-full mx-4" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowQr(false)} className="absolute top-4 right-4 text-stone-400 hover:text-stone-900 transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="font-bold text-lg text-center mb-2">扫码体验 Milo</h3>
+            <p className="text-stone-500 text-sm text-center mb-6">用手机扫描二维码，立即开始</p>
+            <div className="aspect-square w-48 mx-auto bg-stone-100 rounded-2xl flex items-center justify-center">
+              <img src="/images/qrcode.png" alt="QR Code" className="w-full h-full object-contain rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+const sections = [
+  { id: "hero", label: "介绍" },
+  { id: "users", label: "用户" },
+  { id: "plan", label: "计划" },
+  { id: "record", label: "记录" },
+  { id: "dashboard", label: "仪表盘" },
+  { id: "data", label: "数据" },
+  { id: "arch", label: "架构" },
+];
+
+const FloatingNav = () => {
+  const [active, setActive] = useState("hero");
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const offsets = sections.map(s => {
+        const el = document.getElementById(s.id);
+        return { id: s.id, top: el ? el.getBoundingClientRect().top : Infinity };
+      });
+      const current = offsets.reduce((prev, curr) =>
+        Math.abs(curr.top) < Math.abs(prev.top) ? curr : prev
+      );
+      setActive(current.id);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-end gap-1">
+      {sections.map((s) => (
+        <button
+          key={s.id}
+          onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth" })}
+          className="group flex items-center gap-2 py-1.5"
+        >
+          <span className={`text-xs font-medium transition-all opacity-0 group-hover:opacity-100 ${active === s.id ? "!opacity-100 text-stone-900" : "text-stone-400"}`}>
+            {s.label}
+          </span>
+          <div className={`rounded-full transition-all ${active === s.id ? "w-6 h-2 bg-stone-900" : "w-2 h-2 bg-stone-300 group-hover:bg-stone-500"}`} />
+        </button>
+      ))}
+    </div>
+  );
+};
+
 export default function App() {
   return (
     <div className="min-h-screen font-sans selection:bg-stone-900 selection:text-white">
@@ -126,8 +207,10 @@ export default function App() {
         </div>
       </nav>
 
+      <FloatingNav />
+
       {/* Hero Section: Intro + Highlights + Video Demo */}
-      <Section className="pt-32 pb-20">
+      <Section className="pt-32 pb-20" id="hero">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           <div className="lg:col-span-7 pt-4">
             <motion.div
@@ -136,7 +219,7 @@ export default function App() {
               transition={{ duration: 0.6 }}
             >
               <h1 className="serif-title text-4xl md:text-5xl font-bold mb-6 tracking-tight">
-                Milo — AI 营养师伙伴
+                Milo — 你的私人AI营养师
               </h1>
               <p className="text-stone-500 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">
                 一款 AI 驱动的个性化饮食助手。让”吃什么、吃多少”的决策和记录，变得像发一条消息一样简单。
@@ -173,14 +256,17 @@ export default function App() {
               </div>
 
               <div className="flex flex-col items-start gap-4">
-                <a 
-                  href="https://milo-one-lyart.vercel.app" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-stone-900 text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-stone-800 transition-all flex items-center gap-2 shadow-lg shadow-stone-900/10"
-                >
-                  开始定制计划 <ArrowRight className="w-5 h-5" />
-                </a>
+                <div className="flex items-center gap-3">
+                  <a 
+                    href="https://milo-one-lyart.vercel.app" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-stone-900 text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-stone-800 transition-all flex items-center gap-2 shadow-lg shadow-stone-900/10"
+                  >
+                    开始定制计划 <ArrowRight className="w-5 h-5" />
+                  </a>
+                  <QrCodeButton />
+                </div>
                 <div className="flex items-center gap-2 text-stone-500 text-sm pl-1">
                   <Smartphone className="w-4 h-4 flex-shrink-0" />
                   <span>支持 PWA，浏览器打开网址 → 分享 → 添加到主屏幕</span>
@@ -202,7 +288,7 @@ export default function App() {
       </Section>
 
       {/* Target Users */}
-      <Section className="bg-stone-100/50 rounded-[3rem] mb-12">
+      <Section className="bg-stone-100/50 rounded-[3rem] mb-12" id="users">
         <div className="text-center mb-12">
           <h2 className="serif-title text-3xl md:text-4xl font-bold mb-3">目标用户</h2>
           <p className="text-stone-500 text-lg">解决你饮食管理中的真实痛点</p>
@@ -233,7 +319,7 @@ export default function App() {
       </Section>
 
       {/* 1 | Personalized Diet Plan Design */}
-      <Section>
+      <Section id="plan">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           <div className="lg:col-span-7">
             <h2 className="serif-title text-3xl md:text-4xl font-bold mb-6">1｜个性化饮食计划设计</h2>
@@ -322,7 +408,7 @@ export default function App() {
       </Section>
 
       {/* 2 | Multimodal Recording */}
-      <Section className="bg-stone-100/50 rounded-[3rem] mb-12">
+      <Section className="bg-stone-100/50 rounded-[3rem] mb-12" id="record">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
           <div className="lg:col-span-7">
             <h2 className="serif-title text-3xl md:text-4xl font-bold mb-6">2｜饮食记录 — 多模态输入</h2>
@@ -362,7 +448,7 @@ export default function App() {
       </Section>
 
       {/* 3 | Nutrition Dashboard */}
-      <Section className="bg-stone-900 text-white rounded-[3rem] overflow-hidden mb-12">
+      <Section className="bg-stone-900 text-white rounded-[3rem] overflow-hidden mb-12" id="dashboard">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
           <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
             <div className="w-full max-w-[240px]">
@@ -422,49 +508,46 @@ export default function App() {
       </Section>
 
       {/* Data Layer */}
-      <Section>
-        <div className="max-w-4xl mx-auto">
-          <h2 className="serif-title text-3xl md:text-4xl font-bold mb-6">数据层</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <Database className="w-6 h-6 text-protein" />
-                <div>
-                  <h4 className="font-bold mb-2">内置 2,667 条食物营养数据库</h4>
-                  <p className="text-stone-500 text-base">来源中国食物成分表，包含热量、宏量、膳食纤维数据。支持中英文模糊搜索与加权评分匹配。</p>
-                </div>
+      <Section id="data">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="serif-title text-3xl md:text-4xl font-bold mb-3">数据层</h2>
+            <p className="text-stone-500 text-lg">智能匹配营养数据，从本地库到 AI 估算的完整链路</p>
+          </div>
+
+          <div className="p-8 bg-stone-50 rounded-3xl border border-stone-100">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white rounded-2xl p-5 border border-stone-100">
+                <Database className="w-5 h-5 text-protein mb-3" />
+                <h4 className="font-bold text-base mb-1">内置 2,667 条食物营养数据库</h4>
+                <p className="text-stone-500 text-sm leading-relaxed">来源中国食物成分表，包含热量、宏量、膳食纤维数据。支持中英文模糊搜索与加权评分匹配。</p>
               </div>
-              <div className="flex gap-4">
-                <BrainCircuit className="w-6 h-6 text-veggie" />
-                <div>
-                  <h4 className="font-bold mb-2">AI 兜底补充</h4>
-                  <p className="text-stone-500 text-base">当数据库未命中时，自动调用 AI 模型估算营养数据，并写入用户本地自定义库，下次直接命中。</p>
-                </div>
+              <div className="bg-white rounded-2xl p-5 border border-stone-100">
+                <BrainCircuit className="w-5 h-5 text-veggie mb-3" />
+                <h4 className="font-bold text-base mb-1">AI 兜底补充</h4>
+                <p className="text-stone-500 text-sm leading-relaxed">当数据库未命中时，自动调用 AI 模型估算营养数据，并写入用户本地自定义库，下次直接命中。</p>
               </div>
             </div>
-            
-            <div className="p-6 bg-stone-50 rounded-2xl border border-stone-100">
-              <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-stone-400">营养素自动匹配流程</h4>
-              <div className="space-y-3 text-base">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px]">1</div>
-                  <span>用户输入食物名称</span>
-                </div>
-                <div className="w-px h-4 bg-stone-200 ml-3" />
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-stone-100 text-stone-900 flex items-center justify-center text-[10px]">2</div>
-                  <span>本地自定义库查询 (优先)</span>
-                </div>
-                <div className="w-px h-4 bg-stone-200 ml-3" />
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-stone-100 text-stone-900 flex items-center justify-center text-[10px]">3</div>
-                  <span>内置 2,667 条数据库查询</span>
-                </div>
-                <div className="w-px h-4 bg-stone-200 ml-3" />
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-stone-100 text-stone-900 flex items-center justify-center text-[10px]">4</div>
-                  <span>AI 估算 → 写入自定义库</span>
-                </div>
+
+            <div className="flex items-center justify-between bg-white rounded-2xl px-6 py-4 border border-stone-100">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center text-[10px] font-bold">1</div>
+                <span className="text-sm font-medium">输入食物</span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-stone-900" />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-[10px] font-bold">2</div>
+                <span className="text-sm font-medium">自定义库</span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-stone-900" />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-[10px] font-bold">3</div>
+                <span className="text-sm font-medium">内置数据库</span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-stone-900" />
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-stone-200 text-stone-700 flex items-center justify-center text-[10px] font-bold">4</div>
+                <span className="text-sm font-medium">AI 估算</span>
               </div>
             </div>
           </div>
@@ -472,7 +555,7 @@ export default function App() {
       </Section>
 
       {/* AI Model Routing Architecture */}
-      <Section className="bg-white border-y border-stone-100">
+      <Section className="bg-white border-y border-stone-100" id="arch">
         <div className="text-center mb-16">
           <h2 className="serif-title text-3xl md:text-4xl font-bold mb-4">架构与模型</h2>
           <p className="text-stone-500">多模型协同，实现从感知到决策的完整链路</p>
