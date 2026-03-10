@@ -261,7 +261,7 @@ export default function App() {
                     rel="noopener noreferrer"
                     className="bg-stone-900 text-white px-10 py-4 rounded-full text-lg font-medium hover:bg-stone-800 transition-all flex items-center gap-2 shadow-lg shadow-stone-900/10"
                   >
-                    开始定制计划 <ArrowRight className="w-5 h-5" />
+                    开始使用产品 <ArrowRight className="w-5 h-5" />
                   </a>
                   <QrCodeButton />
                 </div>
