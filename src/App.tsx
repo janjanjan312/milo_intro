@@ -104,9 +104,9 @@ const FlowNode = ({ label, icon: Icon, subLabel, variant = "default" }: { label:
 const FlowArrow = ({ direction = "down", length = "h-12" }: { direction?: "down" | "right", length?: string }) => (
   <div className={`flex items-center justify-center ${direction === 'down' ? `${length} w-full` : 'w-12 h-full'}`}>
     {direction === 'down' ? (
-      <svg className="w-2 h-full" viewBox="0 0 8 48" preserveAspectRatio="none">
-        <line x1="4" y1="0" x2="4" y2="42" stroke="#a8a29e" strokeWidth="2" />
-        <polygon points="0,42 8,42 4,48" fill="#a8a29e" />
+      <svg className="w-2.5 h-full" viewBox="0 0 10 48" preserveAspectRatio="none">
+        <line x1="5" y1="0" x2="5" y2="42" stroke="#a8a29e" strokeWidth="2" />
+        <polygon points="0,42 10,42 5,48" fill="#a8a29e" />
       </svg>
     ) : (
       <svg className="h-2 w-full" viewBox="0 0 48 8" preserveAspectRatio="none">
@@ -616,13 +616,13 @@ export default function App() {
             <div className="inline-flex gap-8 mt-12 relative">
               <svg className="absolute left-0 right-0 h-12 pointer-events-none" style={{ top: '-48px', width: '100%' }}>
                 <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
-                <line x1="12.86%" y1="0" x2="87.14%" y2="0" stroke="#a8a29e" strokeWidth="2" />
-                <line x1="12.86%" y1="0" x2="12.86%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
-                <line x1="87.14%" y1="0" x2="87.14%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="12.09%" y1="0" x2="87.91%" y2="0" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="12.09%" y1="0" x2="12.09%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="87.91%" y1="0" x2="87.91%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
               </svg>
               
               {/* Intent Columns */}
-              <div className="flex flex-col items-center gap-6 w-72">
+              <div className="flex flex-col items-center gap-0 w-52">
                 <FlowNode label="饮食记录" variant="accent" />
                 <FlowArrow />
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 text-base space-y-4 shadow-sm w-full">
@@ -632,7 +632,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-0 w-[480px]">
+              <div className="flex flex-col items-center gap-0 w-[380px]">
                 <FlowNode label="饮食计划" variant="accent" />
                 <FlowArrow />
                 <div className="px-5 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-bold">
@@ -644,9 +644,9 @@ export default function App() {
                     <line x1="160" y1="0" x2="160" y2="14" stroke="#a8a29e" strokeWidth="2" />
                     <line x1="78" y1="14" x2="242" y2="14" stroke="#a8a29e" strokeWidth="2" />
                     <line x1="78" y1="14" x2="78" y2="56" stroke="#a8a29e" strokeWidth="2" />
-                    <polygon points="72,56 84,56 78,64" fill="#a8a29e" />
+                    <polygon points="73,56 83,56 78,64" fill="#a8a29e" />
                     <line x1="242" y1="14" x2="242" y2="56" stroke="#a8a29e" strokeWidth="2" />
-                    <polygon points="236,56 248,56 242,64" fill="#a8a29e" />
+                    <polygon points="237,56 247,56 242,64" fill="#a8a29e" />
                   </svg>
                   <span className="absolute left-[40px] top-[18px] text-xs font-bold text-stone-500">No</span>
                   <span className="absolute right-[40px] top-[18px] text-xs font-bold text-stone-500">Yes</span>
@@ -658,7 +658,7 @@ export default function App() {
                     <div className="text-stone-500 text-sm space-y-2">
                       <div>1. 收集 8 类生活惯例</div>
                       <div>2. 分析 + 优化建议</div>
-                      <div className="font-bold text-stone-900">3. 生成全天 Meal Plan</div>
+                      <div>3. 生成全天 Meal Plan</div>
                     </div>
                   </div>
                   <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
@@ -677,7 +677,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-6 w-72">
+              <div className="flex flex-col items-center gap-0 w-52">
                 <FlowNode label="饮食分析" variant="accent" />
                 <FlowArrow />
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 text-base space-y-4 shadow-sm w-full">
