@@ -102,12 +102,18 @@ const FlowNode = ({ label, icon: Icon, subLabel, variant = "default" }: { label:
 );
 
 const FlowArrow = ({ direction = "down", length = "h-12" }: { direction?: "down" | "right", length?: string }) => (
-  <div className={`flex items-center justify-center text-stone-400 ${direction === 'down' ? `${length} w-full` : 'w-12 h-full'}`}>
-    <div className={`bg-stone-300 ${direction === 'down' ? 'w-px h-full' : 'h-px w-full'} relative`}>
-      <div className={`absolute ${direction === 'down' ? 'bottom-0 left-1/2 -translate-x-1/2' : 'right-0 top-1/2 -translate-y-1/2'}`}>
-        <ArrowRight className={`w-4 h-4 ${direction === 'down' ? 'rotate-90' : ''}`} />
-      </div>
-    </div>
+  <div className={`flex items-center justify-center ${direction === 'down' ? `${length} w-full` : 'w-12 h-full'}`}>
+    {direction === 'down' ? (
+      <svg className="w-2 h-full" viewBox="0 0 8 48" preserveAspectRatio="none">
+        <line x1="4" y1="0" x2="4" y2="42" stroke="#a8a29e" strokeWidth="2" />
+        <polygon points="0,42 8,42 4,48" fill="#a8a29e" />
+      </svg>
+    ) : (
+      <svg className="h-2 w-full" viewBox="0 0 48 8" preserveAspectRatio="none">
+        <line x1="0" y1="4" x2="42" y2="4" stroke="#a8a29e" strokeWidth="2" />
+        <polygon points="42,0 42,8 48,4" fill="#a8a29e" />
+      </svg>
+    )}
   </div>
 );
 
@@ -334,27 +340,58 @@ export default function App() {
               
               <div className="relative pl-8 border-l border-stone-200">
                 <div className="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-carbs" />
-                <h4 className="font-bold text-lg mb-2">Step 2: AI 对话深度采集生活惯例</h4>
-                <p className="text-stone-500 text-lg leading-relaxed mb-6">
-                  AI 会像真正的营养师一样，主动询问早餐/午餐/晚餐习惯、加餐习惯、睡眠质量、饮水量、运动强度及压力进食习惯。
+                <h4 className="font-bold text-lg mb-2">Step 2: AI 智能对话 — 自动匹配你的阶段</h4>
+                <p className="text-stone-500 text-base leading-relaxed mb-5">
+                  AI 会根据你是否已有饮食记录，自动选择最合适的路径：
                 </p>
                 
-                <div className="bg-white rounded-2xl border border-stone-100 overflow-hidden shadow-sm max-w-lg">
-                  <div className="grid grid-cols-2 bg-stone-50/50 px-5 py-3 border-b border-stone-100 text-sm font-bold text-stone-400 uppercase tracking-widest">
-                    <div>收集内容</div>
-                    <div>为什么重要</div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="px-2 py-0.5 rounded-md bg-stone-900 text-white text-xs font-bold">A</div>
+                      <h5 className="font-bold text-base">首次使用 · 无记录</h5>
+                    </div>
+                    <p className="text-stone-500 text-sm leading-relaxed mb-4">AI 像真正的营养师一样，主动逐一采集 8 类生活惯例：</p>
+                    <div className="space-y-2 text-sm">
+                      {[
+                        "三餐内容与时间",
+                        "加餐/零食习惯",
+                        "睡眠时间与质量",
+                        "饮水量",
+                        "运动类型/频率",
+                        "压力与情绪性进食",
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-stone-600">
+                          <div className="w-1.5 h-1.5 rounded-full bg-carbs flex-shrink-0" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-stone-400 text-xs mt-4">收集完毕后进入建议阶段，确保计划基于真实生活。</p>
                   </div>
-                  <div className="divide-y divide-stone-100">
-                    {[
-                      { content: "早餐/午餐/晚餐习惯", why: "判断备餐条件或外卖依赖" },
-                      { content: "睡眠时间与质量", why: "影响激素与代谢" },
-                      { content: "运动类型/频率", why: "动态调整当日热量目标" },
-                    ].map((row, idx) => (
-                      <div key={idx} className="grid grid-cols-2 px-5 py-4 text-base leading-relaxed">
-                        <div className="text-stone-900 font-bold">{row.content}</div>
-                        <div className="text-stone-500">{row.why}</div>
+
+                  <div className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="px-2 py-0.5 rounded-md bg-stone-900 text-white text-xs font-bold">B</div>
+                      <h5 className="font-bold text-base">已有记录 · 跳过采集</h5>
+                    </div>
+                    <p className="text-stone-500 text-sm leading-relaxed mb-4">跳过信息收集，根据请求自动切换两种模式：</p>
+                    <div className="space-y-4">
+                      <div className="p-3 bg-stone-50 rounded-xl">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <Utensils className="w-4 h-4 text-stone-700" />
+                          <span className="font-bold text-sm">单餐推荐</span>
+                        </div>
+                        <p className="text-stone-500 text-xs leading-relaxed">"推荐晚餐" → 计算今日剩余配额 → 推荐该餐 → 一键记录到今天</p>
                       </div>
-                    ))}
+                      <div className="p-3 bg-stone-50 rounded-xl">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <LayoutDashboard className="w-4 h-4 text-stone-700" />
+                          <span className="font-bold text-sm">全天计划</span>
+                        </div>
+                        <p className="text-stone-500 text-xs leading-relaxed">"帮我做个饮食计划" → 分析已有记录 → 生成完整一日计划 → 可保存为 Meal Plan</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -390,7 +427,7 @@ export default function App() {
               </div>
               <div>
                 <VideoPlayer src="/images/sec1-s2.mp4" className="aspect-[9/18] shadow-sm" />
-                <p className="text-stone-500 text-sm mt-2 text-center">Step2：AI 对话采集生活惯例</p>
+                <p className="text-stone-500 text-sm mt-2 text-center">Step2：AI 智能对话匹配阶段</p>
               </div>
               <div>
                 <VideoPlayer src="/images/sec1-s3.mp4" className="aspect-[9/18] shadow-sm" />
@@ -576,14 +613,16 @@ export default function App() {
             {/* Intent Stage */}
             <FlowNode label="意图分类" icon={BrainCircuit} subLabel="DeepSeek-V3" variant="primary" />
             
-            <div className="w-full flex justify-center gap-12 mt-12 relative">
-              {/* Branching Lines */}
-              <svg className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-12 pointer-events-none overflow-visible" style={{ top: '-48px' }} viewBox="-500 0 1000 48">
-                <path d="M 0 0 L 0 48 M 0 0 L -320 0 L -320 48 M 0 0 L 320 0 L 320 48" fill="none" stroke="#d6d3d1" strokeWidth="2" />
+            <div className="inline-flex gap-8 mt-12 relative">
+              <svg className="absolute left-0 right-0 h-12 pointer-events-none" style={{ top: '-48px', width: '100%' }}>
+                <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="12.86%" y1="0" x2="87.14%" y2="0" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="12.86%" y1="0" x2="12.86%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
+                <line x1="87.14%" y1="0" x2="87.14%" y2="100%" stroke="#a8a29e" strokeWidth="2" />
               </svg>
               
               {/* Intent Columns */}
-              <div className="flex flex-col items-center gap-6 w-64">
+              <div className="flex flex-col items-center gap-6 w-72">
                 <FlowNode label="饮食记录" variant="accent" />
                 <FlowArrow />
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 text-base space-y-4 shadow-sm w-full">
@@ -593,26 +632,52 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-6 w-72">
+              <div className="flex flex-col items-center gap-0 w-[480px]">
                 <FlowNode label="饮食计划" variant="accent" />
                 <FlowArrow />
-                <div className="bg-white p-6 rounded-2xl border border-stone-100 text-base space-y-6 shadow-sm w-full">
-                  <div className="relative pl-6 border-l-2 border-stone-100">
-                    <span className="font-bold text-stone-400 block mb-1 text-xs uppercase tracking-widest">PHASE 1</span>
-                    逐一收集 8 类生活惯例
+                <div className="px-5 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-bold">
+                  有饮食记录？
+                </div>
+
+                <div className="relative w-full h-16">
+                  <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 320 64" preserveAspectRatio="xMidYMid meet">
+                    <line x1="160" y1="0" x2="160" y2="14" stroke="#a8a29e" strokeWidth="2" />
+                    <line x1="78" y1="14" x2="242" y2="14" stroke="#a8a29e" strokeWidth="2" />
+                    <line x1="78" y1="14" x2="78" y2="56" stroke="#a8a29e" strokeWidth="2" />
+                    <polygon points="72,56 84,56 78,64" fill="#a8a29e" />
+                    <line x1="242" y1="14" x2="242" y2="56" stroke="#a8a29e" strokeWidth="2" />
+                    <polygon points="236,56 248,56 242,64" fill="#a8a29e" />
+                  </svg>
+                  <span className="absolute left-[40px] top-[18px] text-xs font-bold text-stone-500">No</span>
+                  <span className="absolute right-[40px] top-[18px] text-xs font-bold text-stone-500">Yes</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                    <div className="font-bold text-stone-900 text-base mb-3">首次使用</div>
+                    <div className="text-stone-500 text-sm space-y-2">
+                      <div>1. 收集 8 类生活惯例</div>
+                      <div>2. 分析 + 优化建议</div>
+                      <div className="font-bold text-stone-900">3. 生成全天 Meal Plan</div>
+                    </div>
                   </div>
-                  <div className="relative pl-6 border-l-2 border-stone-100">
-                    <span className="font-bold text-stone-400 block mb-1 text-xs uppercase tracking-widest">PHASE 2</span>
-                    分析 + 优化建议
-                  </div>
-                  <div className="relative pl-6 border-l-2 border-stone-900">
-                    <span className="font-bold text-stone-900 block mb-1 text-xs uppercase tracking-widest">PHASE 3</span>
-                    生成结构化 Meal Plan
+                  <div className="bg-white p-5 rounded-2xl border border-stone-100 shadow-sm">
+                    <div className="font-bold text-stone-900 text-base mb-3">已有记录</div>
+                    <div className="text-sm space-y-4">
+                      <div>
+                        <div className="font-bold text-stone-700 mb-1">单餐推荐</div>
+                        <div className="text-stone-500">计算剩余配额 → 推荐该餐 → 记录到今天</div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-stone-700 mb-1">全天计划</div>
+                        <div className="text-stone-500">分析记录 → 生成计划 → 保存至计划库</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-6 w-64">
+              <div className="flex flex-col items-center gap-6 w-72">
                 <FlowNode label="饮食分析" variant="accent" />
                 <FlowArrow />
                 <div className="bg-white p-6 rounded-2xl border border-stone-100 text-base space-y-4 shadow-sm w-full">
